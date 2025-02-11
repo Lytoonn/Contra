@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _t
 
 class CustomUserManager(BaseUserManager):
     
-    def createUser(self, email: str, password: str, **extras):
+    def create_user(self, email: str, password: str, **extras):
         """
         From https://docs.djangoproject.com/en/5.1/topics/auth/customizing/#writing-a-manager-for-a-custom-user-model :
             The prototype of createUser() should accept the username field,
@@ -36,7 +36,7 @@ class CustomUserManager(BaseUserManager):
         user.save()
         return user
 
-    def createSuperUser(self, email:str, password: str, **extras):
+    def create_superuser(self, email:str, password: str, **extras):
         """
         From a source of the Internet:
             A superuser in Django is a special type of user account that has
@@ -53,7 +53,7 @@ class CustomUserManager(BaseUserManager):
                 raise ValueError(_t('Superuser must have all fields set to True.'))
             extras[field] = True
 
-        user = self.createUser(email, password, **extras)
+        user = self.create_user(email, password, **extras)
         user.is_admin = True
         user.save()
         return user

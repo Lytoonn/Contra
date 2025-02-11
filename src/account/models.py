@@ -36,7 +36,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         default = False
     )
     dateJoined = models.DateTimeField(
-        default = timezone.now()
+        default = timezone.now
     )
 
     is_writer = models.BooleanField(
