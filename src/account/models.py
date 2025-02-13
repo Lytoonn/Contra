@@ -24,10 +24,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = 'email address'
     )
     firstName = models.CharField(
-        max_length = FIRST_NAME_MAXLEN
+        max_length = FIRST_NAME_MAXLEN,
+        verbose_name = 'first name'
     )
     lastName = models.CharField(
-        max_length = LAST_NAME_MAXLEN
+        max_length = LAST_NAME_MAXLEN,
+        verbose_name = 'last name'
     )
     is_active = models.BooleanField(
         default = True
