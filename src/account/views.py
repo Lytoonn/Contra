@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse
 import django.contrib.auth as auth
 
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
-from common.django_utils import arender
+from common.django_utils import arender, alogout
 from .models import CustomUser
 
 async def home(request: HttpRequest) -> HttpResponse:
@@ -35,14 +35,15 @@ async def login(request: HttpRequest) -> HttpResponse:
 
             if user:
                 await auth.alogin(request, user)
-                msg = (
-                    'Thanks for returning, Writer!' if user.is_writer else
-                    'Welcome back, Client!'
-                )
-
-                return HttpResponse(msg)
+                return redirect(
+                    'writer-dashboard' if user.is_writer else 'client-dashboard'
+                    )
     else:
         form = CustomAuthenticationForm()
 
     context = { 'login_form': form }
     return await arender(request, 'account/login.html', context)
+
+async def logout(request: HttpRequest) -> HttpResponse:
+    await alogout(request)
+    return redirect('/')
