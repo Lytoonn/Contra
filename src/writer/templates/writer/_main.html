@@ -1,6 +1,9 @@
+{% comment %}
 <!--
-    https://docs.djangoproject.com/en/5.1/ref/templates/language/
+    https://docs.djangoproject.com/en/5.1/ref/templates/language/#template-inheritance
 -->
+{% endcomment %}
+
 {% load static %}
 {% load i18n %}
 <!DOCTYPE html>
@@ -40,33 +43,33 @@
         </button>
 
         <div class="collapse navbar-collapse text-center" id="navbarNavDropdown">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="btn btn-secondary navbar-btn" type="button"  
-                        href="{% url 'register' %}">{% translate 'Register' %}</a>
+                        href="{% url 'writer-dashboard' %}">{% translate 'Dashboard' %}</a>
                 </li>
                 <li class="nav-item">
                     <a class="btn btn-secondary navbar-btn" type="button"  
-                        href="{% url 'login' %}">{% translate 'Login' %}</a>
+                        href="{% url 'writer-create-article' %}">{% translate 'Create Article' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-secondary navbar-btn" type="button"  
+                        href="{% url 'writer-my-articles' %}">{% translate 'My Articles' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-secondary navbar-btn" type="button"  
+                        href="{% url 'writer-account-settings' %}">{% translate 'Account Settings' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-secondary navbar-btn" type="button"  
+                        href="{% url 'logout' %}">{% translate 'Logout' %}</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <br>
-    <br>
+    {% block content %}
 
-    <div class="text-center">
-        <h5>
-            {% translate 'Get unique access to rentable perspectives about the capital markets!' %}
-        </h5>
-        <br>
-        <p> {% translate 'Access to our exclusive collection with reports and articles selection.' %}</p>
-        <br>
-        <a class="btn btn-success" type="button"  href="{% url 'register' %}">
-            <i class="fa fa-angle-right" aria-hidden="true"></i> 
-            {% translate 'Get Started' %}
-        </a>
-    </div>
+    {% endblock %}
 </body>
 </html>

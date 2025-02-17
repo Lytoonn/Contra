@@ -1,12 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Dashboard</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <h1>Writer Dashboard</h1>
-    <a href="{% url 'logout' %}">Log Out</a>
-</body>
-</html>
+{% extends 'writer/_main.html' %}
+
+{% comment %}
+<!--
+    https://docs.djangoproject.com/en/5.1/ref/templates/language/#template-inheritance
+-->
+{% endcomment %}
+
+{% load i18n %}
+
+{% block content %}
+    <div class="container bg-white shadow mt-5 p-5 form-layout text-center">
+        <h3> ✏️ {% translate 'Welcome back,' %} {{ user.firstName }}!</h3>
+    </div>
+{% endblock %}

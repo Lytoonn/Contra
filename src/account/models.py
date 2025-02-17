@@ -12,6 +12,7 @@ See:
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _t
 
 from .managers import CustomUserManager
 
@@ -25,11 +26,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     firstName = models.CharField(
         max_length = FIRST_NAME_MAXLEN,
-        verbose_name = 'first name'
+        verbose_name = _t('first name')
     )
     lastName = models.CharField(
         max_length = LAST_NAME_MAXLEN,
-        verbose_name = 'last name'
+        verbose_name = _t('last name')
     )
     is_active = models.BooleanField(
         default = True
