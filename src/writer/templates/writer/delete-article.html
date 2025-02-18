@@ -1,0 +1,22 @@
+{% extends 'writer/_main.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container bg-white shadow mt-5 p-5 form-layout">
+        <div class="text-center">
+            <h3>{% translate 'Are you sure you want to delete the dollowing article?' %}</h3>
+            <p>{% translate "You may update the article below:" %}</p>
+        </div>
+        <form method="POST" autocomplete="OFF">
+            {% csrf_token %}
+            
+            <h5>{{ article.title }}</h5>
+            <div class="d-flex justify-content-between align-items-center">
+                <input class="btn btn-danger" type="submit" value="{% translate 'Delete' %}">
+                <a href="{% url 'writer-my-articles' %}" class="btn btn-success">
+                    {% translate 'Go Back' %}
+                </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

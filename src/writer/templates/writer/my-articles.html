@@ -1,7 +1,24 @@
 {% extends 'writer/_main.html' %}
 {% load i18n %}
+
 {% block content %}
-    <div class="container bg-white shadow mt-5 p-5 form-layout text-center">
-        <h1>My Articles</h1>
-    </div>
+    {% for article in my_articles %}
+        <div class="container bg-white shadow mt-5 p-5 form-layout">
+            <h3>{{ article.title }}</h3>
+            <p>
+                {{ article.content }}
+            </p>
+            <hr>
+
+            <div class="article-info">
+                <em> {{ article.date_posted }} </em>
+                <a href="{% url 'writer-update-article' article.id %}" class="btn btn-link btn-light">
+                    {% translate 'Update' %}
+                </a>
+                <a href="{% url 'writer-delete-article' article.id %}" class="btn btn-link btn-light">
+                    {% translate 'Delete' %}
+                </a>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
