@@ -90,3 +90,12 @@ async def update_user(request: HttpRequest) -> HttpResponse:
         form = UpdateUserForm(instance = user)
     context = {'update_user_form': form}
     return await arender(request, 'writer/update-user.html', context)
+
+@awriter_required
+async def delete_account(request: HttpRequest) -> HttpResponse:
+    user = await aget_user(request)
+    if request.method == 'POST':
+        await user.adelete()
+        return redirect('home')
+    context = {'user': user}
+    return await arender(request, 'writer/delete-account.html', context)

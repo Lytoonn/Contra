@@ -12,7 +12,12 @@
             
             {{ update_user_form|crispy }}
 
-            <input class="btn btn-success" type="submit" value="{% translate 'Update' %}">
+            <div class="d-flex justify-content-between align-items-center">
+                <input class="btn btn-success" type="submit" value="{% translate 'Update' %}">
+                <a href="{% url 'writer-delete-account' %}" class="btn btn-link btn-light">
+                    {% translate 'Delete' %}
+                </a>
+            </div>
         </form>
     </div>
 {% endblock %}

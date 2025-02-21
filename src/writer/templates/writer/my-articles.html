@@ -2,11 +2,37 @@
 {% load i18n %}
 
 {% block content %}
+
+    {% if not my_articles %}
+        <div class="container bg-white shadow mt-5 p-5 form-layout">
+            <h5>{% translate "You still haven't created an article." %}</h5>
+            <hr>
+            <p>
+                <strong>
+                    {% translate "Here you'll see all the reports and articles you've written." %}
+                   
+                </strong>
+                <p>
+                    <em>{% translate "What's your perspective on the markets right now?" %}</em>
+                </p>
+            </p>
+        </div>
+    {% endif %}
+
     {% for article in my_articles %}
         <div class="container bg-white shadow mt-5 p-5 form-layout">
             <h3>{{ article.title }}</h3>
             <p>
                 {{ article.content }}
+            </p>
+            <p>
+                <strong>
+                    {% if article.is_premium %}
+                        ⭐ {% translate 'Premium Article' %}
+                    {% else %}
+                        {% translate 'Standard Article' %}
+                    {% endif %}
+                </strong>
             </p>
             <hr>
 
