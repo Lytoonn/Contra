@@ -1,0 +1,57 @@
+{% extends 'client/_main.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="container bg-white shadow mb-4 mt-5 p-5 form-layout text-center">
+        <h5> {% translate 'Subscription Plans' %} </h5>
+    </div>
+    <div class="row ps-4 pe-4">
+        <div class="container bg-white shadow mt-3 p-4 paypal-form-layout text-center">
+            <div id="paypal-button-container-P-5JF74700F7609213LM64LLLI"></div>
+            <script src="https://www.paypal.com/sdk/js?client-id=AQEB8ulIdxr2ZJuGkn2ZS-Cp_wkkzDvj5NCjq7yinNFp9fqMWbd7n1qdxOalD7Cu10JFS5tl12yrfUx7&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+            <script>
+            paypal.Buttons({
+                style: {
+                    shape: 'pill',
+                    color: 'silver',
+                    layout: 'vertical',
+                    label: 'subscribe'
+                },
+                createSubscription: function(data, actions) {
+                    return actions.subscription.create({
+                    /* Creates the subscription */
+                    plan_id: 'P-5JF74700F7609213LM64LLLI'
+                    });
+                },
+                onApprove: function(data, actions) {
+                    alert(data.subscriptionID); // You can add optional success message for the subscriber here
+                }
+            }).render('#paypal-button-container-P-5JF74700F7609213LM64LLLI'); // Renders the PayPal button
+            </script>
+        </div>
+
+        <div class="container bg-white shadow mt-3 p-4 paypal-form-layout text-center">
+            <div id="paypal-button-container-P-5JF74700F7609213LM64LLLI"></div>
+            <script src="https://www.paypal.com/sdk/js?client-id=AQEB8ulIdxr2ZJuGkn2ZS-Cp_wkkzDvj5NCjq7yinNFp9fqMWbd7n1qdxOalD7Cu10JFS5tl12yrfUx7&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+            <script>
+            paypal.Buttons({
+                style: {
+                    shape: 'pill',
+                    color: 'silver',
+                    layout: 'vertical',
+                    label: 'subscribe'
+                },
+                createSubscription: function(data, actions) {
+                    return actions.subscription.create({
+                    /* Creates the subscription */
+                    plan_id: 'P-5JF74700F7609213LM64LLLI'
+                    });
+                },
+                onApprove: function(data, actions) {
+                    alert(data.subscriptionID); // You can add optional success message for the subscriber here
+                }
+            }).render('#paypal-button-container-P-5JF74700F7609213LM64LLLI'); // Renders the PayPal button
+            </script>
+        </div>
+
+    </div>
+{% endblock %}
