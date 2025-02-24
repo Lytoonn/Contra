@@ -30,9 +30,17 @@
             <h5>
                 {% translate 'Hi! Thanks for being a registered user.' %}
             </h5>
-            <strong><em>
-                {% translate 'Before you can browse any articles, you need an active subscription plan.' %}
-            </em></strong>
+            <p>
+                <strong><em>
+                    {% translate 'Before you can browse any articles, you need an active subscription plan.' %}
+                </em></strong>
+            </p>
+            <hr>
+            <p class="mt-5 text-center">
+                <a href="{% url 'client-subscribe-plan' %}" class="btn btn-info">
+                    {% translate 'View subscription plans' %}
+                </a>
+            </p>
         </div>
     {% endif %}
 {% endblock content %}

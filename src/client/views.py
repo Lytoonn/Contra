@@ -53,3 +53,35 @@ async def subscribe_plan(request: HttpRequest) -> HttpResponse:
     This is the client's page to subscription plans.
     """
     return await arender(request, 'client/subscribe-plan.html')
+
+@aclient_required
+async def update_user(request: HttpRequest) -> HttpResponse:
+    """
+    This is the client's update account page.
+    """
+    user = await aget_user(request)
+    subscription = None
+    try:
+        subscription = await Subscription.objects.aget(user = user, is_active = True)
+    except ObjectDoesNotExist:
+        pass
+    context = {'has_subscription': subscription is not None}
+    return await arender(request, 'client/update-user.html', context)
+
+
+@aclient_required
+async def create_subscription(request: HttpRequest, sub_id: str, plan: str) -> HttpResponse:
+    """
+    This is the client's subscription page.
+    """
+    plan_choice = PlanChoices(plan)
+    user = await aget_user(request)
+    await Subscription.objects.acreate(
+        plan = plan_choice.value,
+        cost = '3.00' if plan_choice == PlanChoices.STANDARD else '9.00',
+        payment_provider_id = sub_id,
+        is_active = True,
+        user = user,
+    )
+    context = {'subscription_plan': plan_choice.label}
+    return await arender(request, 'client/create-subscription.html', context)

@@ -59,6 +59,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# see https://docs.djangoproject.com/en/5.1/ref/middleware/#django.middleware.security.SecurityMiddleware
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
 ROOT_URLCONF = 'contra.urls'
 
 TEMPLATES = [

@@ -6,6 +6,12 @@
     </div>
     <div class="row ps-4 pe-4">
         <div class="container bg-white shadow mt-3 p-4 paypal-form-layout text-center">
+            <h5>{% translate 'Standard Subscription' %}</h5>
+            <hr>
+            <p>{% translate 'Get access to standard articles and reports.' %}</p>
+            <p><em>{% translate '(Limited Access)' %}</em></p>
+            <hr>
+
             <div id="paypal-button-container-P-5JF74700F7609213LM64LLLI"></div>
             <script src="https://www.paypal.com/sdk/js?client-id=AQEB8ulIdxr2ZJuGkn2ZS-Cp_wkkzDvj5NCjq7yinNFp9fqMWbd7n1qdxOalD7Cu10JFS5tl12yrfUx7&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
             <script>
@@ -23,33 +29,43 @@
                     });
                 },
                 onApprove: function(data, actions) {
-                    alert(data.subscriptionID); // You can add optional success message for the subscriber here
+                    let baseUrl = window.location.origin;
+                    let path = `/client/create-subscription/${data.subscriptionID}/ST`;
+                    window.location.href = baseUrl + path;
                 }
             }).render('#paypal-button-container-P-5JF74700F7609213LM64LLLI'); // Renders the PayPal button
             </script>
         </div>
 
         <div class="container bg-white shadow mt-3 p-4 paypal-form-layout text-center">
-            <div id="paypal-button-container-P-5JF74700F7609213LM64LLLI"></div>
-            <script src="https://www.paypal.com/sdk/js?client-id=AQEB8ulIdxr2ZJuGkn2ZS-Cp_wkkzDvj5NCjq7yinNFp9fqMWbd7n1qdxOalD7Cu10JFS5tl12yrfUx7&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+            <h5>{% translate 'Premium Subscription' %} ⭐</h5>
+            <hr>
+            <p>{% translate 'Highly regarded premium articles and reports' %}</p>
+            <p><em>{% translate '(Fully Access)' %}</em></p>
+            <hr>
+            
+            <div id="paypal-button-container-P-81653453GU063804XM66IQCQ"></div>
+            <script src="https://www.paypal.com/sdk/js?&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
             <script>
             paypal.Buttons({
                 style: {
                     shape: 'pill',
-                    color: 'silver',
+                    color: 'gold',
                     layout: 'vertical',
                     label: 'subscribe'
                 },
                 createSubscription: function(data, actions) {
                     return actions.subscription.create({
                     /* Creates the subscription */
-                    plan_id: 'P-5JF74700F7609213LM64LLLI'
+                    plan_id: 'P-81653453GU063804XM66IQCQ'
                     });
                 },
                 onApprove: function(data, actions) {
-                    alert(data.subscriptionID); // You can add optional success message for the subscriber here
+                    let baseUrl = window.location.origin;
+                    let path = `/client/create-subscription/${data.subscriptionID}/ST`;
+                    window.location.href = baseUrl + path;
                 }
-            }).render('#paypal-button-container-P-5JF74700F7609213LM64LLLI'); // Renders the PayPal button
+            }).render('#paypal-button-container-P-81653453GU063804XM66IQCQ'); // Renders the PayPal button
             </script>
         </div>
 
