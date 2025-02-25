@@ -4,12 +4,11 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import aget_user
 
-from client.models import Subscription
+from client.models import Subscription, PlanChoice
 from writer.models import Article
 from common.auth import aclient_required
 from common.django_utils import arender
 
-PlanChoices = Subscription.PlanChoices
 
 @aclient_required
 async def dashboard(request: HttpRequest) -> HttpResponse:
@@ -19,8 +18,7 @@ async def dashboard(request: HttpRequest) -> HttpResponse:
     user = await aget_user(request)
     try:
         subscription = await Subscription.objects.aget(user = user, is_active = True)
-        plan = PlanChoices(subscription.plan)
-        subscription_plan = plan.label
+        subscription_plan = (await subscription.aplan_choice()).name
     except ObjectDoesNotExist:
         subscription_plan = 'No subscription yet.'
     context = {'subscription_plan': subscription_plan}
@@ -32,19 +30,17 @@ async def browse_articles(request: HttpRequest) -> HttpResponse:
     This is the client's page to browse articles.
     """
     user = await aget_user(request)
+    subscription = None
     try:
         subscription = await Subscription.objects.aget(user = user, is_active = True)
-        has_subscription = True
-        plan = PlanChoices(subscription.plan)
-        if plan == PlanChoices.STANDARD:
+        if not await subscription.ais_premium():
             articles = Article.objects.filter(is_premium = False)
         else:
             articles = Article.objects.all()
     except ObjectDoesNotExist:
-        has_subscription = False
         articles = []
     
-    context = {'has_subscription': has_subscription, 'articles': articles}
+    context = {'has_subscription': subscription is not None, 'articles': articles}
     return await arender(request, 'client/browse-articles.html', context)
 
 @aclient_required
@@ -70,18 +66,18 @@ async def update_user(request: HttpRequest) -> HttpResponse:
 
 
 @aclient_required
-async def create_subscription(request: HttpRequest, sub_id: str, plan: str) -> HttpResponse:
+async def create_subscription(request: HttpRequest, sub_id: str, plan_code: str) -> HttpResponse:
     """
     This is the client's subscription page.
     """
-    plan_choice = PlanChoices(plan)
     user = await aget_user(request)
+    plan_choice = await PlanChoice.afrom_plan_code(plan_code)
     await Subscription.objects.acreate(
-        plan = plan_choice.value,
-        cost = '3.00' if plan_choice == PlanChoices.STANDARD else '9.00',
-        payment_provider_id = sub_id,
+        plan_choice = plan_choice,
+        cost = plan_choice.cost,
+        external_subscription_id = sub_id,
         is_active = True,
         user = user,
     )
-    context = {'subscription_plan': plan_choice.label}
+    context = {'subscription_plan': plan_choice.name}
     return await arender(request, 'client/create-subscription.html', context)
