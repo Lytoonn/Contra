@@ -68,7 +68,7 @@ ROOT_URLCONF = 'contra.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR / 'common' / 'templates' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

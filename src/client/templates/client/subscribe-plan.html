@@ -1,73 +1,44 @@
 {% extends 'client/_main.html' %}
 {% load i18n %}
+{% load l10n %}
 {% block content %}
     <div class="container bg-white shadow mb-4 mt-5 p-5 form-layout text-center">
         <h5> {% translate 'Subscription Plans' %} </h5>
     </div>
+
     <div class="row ps-4 pe-4">
-        <div class="container bg-white shadow mt-3 p-4 paypal-form-layout text-center">
-            <h5>{% translate 'Standard Subscription' %}</h5>
-            <hr>
-            <p>{% translate 'Get access to standard articles and reports.' %}</p>
-            <p><em>{% translate '(Limited Access)' %}</em></p>
-            <hr>
+        {% for plan_choice in plan_choices %}
+            <div class="container bg-white shadow mt-3 p-4 paypal-form-layout text-center">
+                <h5>{% translate plan_choice.name %} {% translate 'Subscription' %}</h5>
+                <hr>
+                <p>{% translate plan_choice.description1 %}</p>
+                <p><em>({% translate plan_choice.description2 %})</em></p>
+                <p>
+                    <strong>{{ plan_choice.cost|localize }} {% translate 'monthly' %}</strong>
+                </p>
+                <hr>
 
-            <div id="paypal-button-container-P-5JF74700F7609213LM64LLLI"></div>
-            <script src="https://www.paypal.com/sdk/js?client-id=AQEB8ulIdxr2ZJuGkn2ZS-Cp_wkkzDvj5NCjq7yinNFp9fqMWbd7n1qdxOalD7Cu10JFS5tl12yrfUx7&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
-            <script>
-            paypal.Buttons({
-                style: {
-                    shape: 'pill',
-                    color: 'silver',
-                    layout: 'vertical',
-                    label: 'subscribe'
-                },
-                createSubscription: function(data, actions) {
-                    return actions.subscription.create({
-                    /* Creates the subscription */
-                    plan_id: 'P-5JF74700F7609213LM64LLLI'
-                    });
-                },
-                onApprove: function(data, actions) {
-                    let baseUrl = window.location.origin;
-                    let path = `/client/create-subscription/${data.subscriptionID}/ST`;
-                    window.location.href = baseUrl + path;
-                }
-            }).render('#paypal-button-container-P-5JF74700F7609213LM64LLLI'); // Renders the PayPal button
-            </script>
-        </div>
-
-        <div class="container bg-white shadow mt-3 p-4 paypal-form-layout text-center">
-            <h5>{% translate 'Premium Subscription' %} ⭐</h5>
-            <hr>
-            <p>{% translate 'Highly regarded premium articles and reports' %}</p>
-            <p><em>{% translate '(Fully Access)' %}</em></p>
-            <hr>
-            
-            <div id="paypal-button-container-P-81653453GU063804XM66IQCQ"></div>
-            <script src="https://www.paypal.com/sdk/js?vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
-            <script>
-            paypal.Buttons({
-                style: {
-                    shape: 'pill',
-                    color: 'gold',
-                    layout: 'vertical',
-                    label: 'subscribe'
-                },
-                createSubscription: function(data, actions) {
-                    return actions.subscription.create({
-                    /* Creates the subscription */
-                    plan_id: 'P-81653453GU063804XM66IQCQ'
-                    });
-                },
-                onApprove: function(data, actions) {
-                    let baseUrl = window.location.origin;
-                    let path = `/client/create-subscription/${data.subscriptionID}/PR`;
-                    window.location.href = baseUrl + path;
-                }
-            }).render('#paypal-button-container-P-81653453GU063804XM66IQCQ'); // Renders the PayPal button
-            </script>
-        </div>
-
+                <div id="paypal-button-container-{{ plan_choice.external_plan_id }}"></div>
+                <script src="{{ plan_choice.external_api_url }}" data-sdk-integration-source="button-factory"></script>
+                <script>
+                paypal.Buttons({
+                    {% autoescape off %}
+                    style: JSON.parse(`{{ plan_choice.external_style_json }}`),
+                    {% endautoescape %}
+                    createSubscription: function(data, actions) {
+                        return actions.subscription.create({
+                        /* Creates the subscription */
+                        plan_id: '{{ plan_choice.external_plan_id }}'
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        let baseUrl = window.location.origin;
+                        let path = `/client/create-subscription/${data.subscriptionID}/{{ plan_choice.plan_code }}`;
+                        window.location.href = baseUrl + path;
+                    }
+                }).render('#paypal-button-container-{{ plan_choice.external_plan_id }}'); // Renders the PayPal button
+                </script>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}

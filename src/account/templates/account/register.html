@@ -8,3 +8,13 @@
 {% block form_title %} {% translate 'Register' %} {% endblock %}
 
 {% block form_body %} {{ register_form|crispy }} {% endblock %}
+
+{% block submit_action %} Register {% endblock %}
+
+{% block secondary_actions %}
+    {% translate 'Login' as btn1_text %}
+    {% translate 'Home' as btn2_text %}
+    {% with btn1_url='login' btn2_url='home' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

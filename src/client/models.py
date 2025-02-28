@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.db import models
 from django.utils.translation import gettext_lazy as _t
 from django.utils.translation import gettext as _t2
+from django.core.exceptions import ObjectDoesNotExist
 
 from asgiref.sync import sync_to_async
 
@@ -80,3 +81,13 @@ class Subscription(models.Model):
 
     async def ais_premium(self) -> bool:
         return (await self.aplan_choice()).plan_code == 'PR'
+    
+    @staticmethod
+    async def afor_user(user: CustomUser, status = '') -> 'Subscription | None':
+        kargs: dict = {'user': user}
+        if status in ('A', 'I'):
+            kargs.update(is_active = (status == 'A'))
+        try:
+            return await Subscription.objects.aget(**kargs)
+        except ObjectDoesNotExist:
+            return None
