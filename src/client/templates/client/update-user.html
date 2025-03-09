@@ -2,7 +2,21 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% block content %}
-    {% if not has_subscription %}
+    {% if has_subscription %}
+        <div class="container bg-white shadow mt-5 p-5 form-layout text-center">
+            <h3> {% translate 'subscription status' %} </h3>
+            <hr class="mb-4">
+            <h4> 📜 <i> {% translate subscription_plan %} </i></h4>
+            <div class="d-flex justify-content-between align-items-center mt-5">
+                <a href="{% url 'client-update-subscription' subscription.id %}" class="btn btn-success"> 
+                    {% translate 'Update' %}
+                </a>
+                <a href="{% url 'client-cancel-subscription' subscription.id %}" class="btn btn-link btn-light">
+                    {% translate 'Cancel Subscription' %}
+                </a>
+            </div>
+        </div>
+    {% else %}
         <div class="container bg-white shadow mt-5 p-5 form-layout text-center">
             <h4> {% translate 'Choose a subscription plan: ' %} </h4>
             <hr>
@@ -12,16 +26,15 @@
         </div>
     {% endif %}
     <div class="container bg-white shadow mt-5 p-5 form-layout">
-        <div class="text-center">
-            <h3>{% translate 'Update your Account Details' %}</h3>
+            <h3 class="text-center">{% translate 'Update your Account Details' %}</h3>
+            <hr class="mb-4">
             <p>{% translate "You may update your account details below:" %}</p>
-        </div>
         <form method="POST" autocomplete="OFF">
             {% csrf_token %}
             
-            {{ update_user_form|crispy }}
+            {% comment %} {{ update_user_form|crispy }} {% endcomment %}
 
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center mt-5">
                 <input class="btn btn-success" type="submit" value="{% translate 'Update' %}">
                 <a href="{% url 'writer-delete-account' %}" class="btn btn-link btn-light">
                     {% translate 'Delete' %}

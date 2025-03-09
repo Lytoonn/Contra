@@ -3,11 +3,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import aget_user
+from django.utils.translation import gettext as _t
 
 from client.models import Subscription, PlanChoice
+from .forms import UpdateSubscriptionForm
 from writer.models import Article
-from common.auth import aclient_required
+from common.auth import aclient_required, ensure_for_current_user
 from common.django_utils import arender
+from . import paypal as sub_manager
 
 
 @aclient_required
@@ -59,7 +62,14 @@ async def update_user(request: HttpRequest) -> HttpResponse:
     This is the client's update account page.
     """
     user = await aget_user(request)
-    context = {'has_subscription': bool(await Subscription.afor_user(user))}
+    subscription_plan = ''
+    if subscription := await Subscription.afor_user(user):
+        subscription_plan = (await subscription.aplan_choice()).name
+    context = {
+        'has_subscription': bool(subscription),
+        'subscription': subscription,
+        'subscription_plan': subscription_plan,
+    }
     return await arender(request, 'client/update-user.html', context)
 
 
@@ -83,3 +93,48 @@ async def create_subscription(request: HttpRequest, sub_id: str, plan_code: str)
     )
     context = {'subscription_plan': plan_choice.name}
     return await arender(request, 'client/create-subscription.html', context)
+
+@aclient_required
+@ensure_for_current_user(Subscription, redirect_if_missing = 'client-dashboard')
+async def cancel_subscription(request: HttpRequest, subscription: Subscription) -> HttpResponse:
+    """
+    This is the client's cancel subscription page.
+    """
+    if request.method == 'POST':
+        # First, cancel the subscription on PayPal
+        access_token = await sub_manager.get_access_token()
+        sub_id = subscription.external_subscription_id
+        await sub_manager.cancel_subscription(access_token, sub_id)
+        
+        # Then, cancel it locally by removing it from the DB
+        await subscription.adelete()
+
+        # Set the template that confirms that the subscription was cancelled
+        context = {}
+        template = 'client/cancel-subscription-confirmed.html'
+
+    else:
+        context = {'subscription_plan': (await subscription.aplan_choice()).name}
+        template = 'client/cancel-subscription.html'
+    
+    return await arender(request, template, context)
+
+@aclient_required
+@ensure_for_current_user(Subscription, redirect_if_missing = 'client-dashboard')
+async def update_subscription(request: HttpRequest, subscription: Subscription) -> HttpResponse:
+    """
+    This is the client's update subscription page.
+    """
+    user_plan_choice = await subscription.aplan_choice()
+    if request.method == 'POST':
+        http_response = redirect('client-update-user')
+
+    else:
+        form = await UpdateSubscriptionForm.ainit(
+            exclude = [user_plan_choice.plan_code],
+            format_fn = lambda pc: _t(f'{pc.name} ({pc.cost}€ / month)')
+        )
+        context = {'update_subscription_form': form}
+        http_response = await arender(request, 'client/update-subscription.html', context)
+
+    return http_response

@@ -1,0 +1,22 @@
+{% extends 'client/_main.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container bg-white shadow mt-5 p-5 form-layout">
+        <h3 class="text-center">{% translate 'Cancel subscription' %}</h3>
+        <hr>
+        <p>{% translate 'Are you sure you want to cancel your subscription?' %}</p>
+        <form method="POST" autocomplete="OFF" class="mt-5">
+            {% csrf_token %}
+            
+            <h5> {{ subscription_plan }} {% translate 'subscription' %} </h5>
+
+            <div class="d-flex gap-2 align-items-center mt-5">
+                <input class="btn btn-danger" type="submit" value="{% translate 'Cancel' %}">
+                <a href="{% url 'client-update-user' %}" class="btn btn-success">
+                    {% translate 'Go Back' %}
+                </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

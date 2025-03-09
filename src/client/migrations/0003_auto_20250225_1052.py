@@ -13,7 +13,7 @@ def populate_plan_choice(apps, schema_editor):
         is_active = True,
         description1 = 'Get access to standard articles and reports',
         description2 = 'Limited Access',
-        external_plan_id = 'P-5JF74700F7609213LM64LLLI',
+        external_plan_id = 'P-0X302937X6751431FM7G2YVQ',
         external_api_url = 'https://www.paypal.com/sdk/js?client-id=AQEB8ulIdxr2ZJuGkn2ZS-Cp_wkkzDvj5NCjq7yinNFp9fqMWbd7n1qdxOalD7Cu10JFS5tl12yrfUx7&vault=true&intent=subscription',
         external_style_json = """{
     "shape": "pill",
@@ -30,7 +30,7 @@ def populate_plan_choice(apps, schema_editor):
         is_active = True,
         description1 = 'Highly regarded premium articles and reports',
         description2 = 'Premium Subscription',
-        external_plan_id = 'P-81653453GU063804XM66IQCQ',
+        external_plan_id = 'P-2DL88068ST098204AM7G2ZNI',
         external_api_url = 'https://www.paypal.com/sdk/js?vault=true&intent=subscription',
         external_style_json = """{
     "shape": "pill",

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import decouple
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,3 +137,10 @@ STATICFILES_DIRS = [ BASE_DIR / 'static']
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+### PayPal SETTINGS ###
+
+PAYPAL_CLIENT_ID: str = decouple.config('PAYPAL_CLIENT_ID')
+PAYPAL_SECRET_ID: str = decouple.config('PAYPAL_SECRET_ID')
+PAYPAL_AUTH_URL: str = decouple.config('PAYPAL_AUTH_URL')
+PAYPAL_BILLING_SUBSCRIPTIONS_URL: str = decouple.config('PAYPAL_BILLING_SUBSCRIPTIONS_URL')

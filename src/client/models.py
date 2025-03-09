@@ -62,7 +62,7 @@ class Subscription(models.Model):
         max_digits = SUBSCRIPTION_COST_MAX_DIGITS, decimal_places = 2, verbose_name = _t('Subscription cost')
     )
     external_subscription_id = models.CharField(
-        max_length = EXTERNAL_ID_MAX_LEN, verbose_name = _t('External subscription ID')
+        max_length = EXTERNAL_ID_MAX_LEN, unique = True, verbose_name = _t('External subscription ID')
     )
     is_active = models.BooleanField(default = False)
     date_added = models.DateTimeField(default = timezone.now)
