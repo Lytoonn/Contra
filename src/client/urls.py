@@ -9,4 +9,5 @@ urlpatterns = [
     path('create-subscription/<str:sub_id>/<str:plan_code>', views.create_subscription, name = 'client-create-subscription'),
     path('cancel-subscription/<int:id>', views.cancel_subscription, name = 'client-cancel-subscription'),
     path('update-subscription/<int:id>', views.update_subscription, name = 'client-update-subscription'),
+    path('update-subscription-confirmed/', views.update_subscription_confirmed, name = 'client-update-subscription-confirmed'),
 ]

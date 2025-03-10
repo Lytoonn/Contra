@@ -3,12 +3,12 @@
 
 {% block content %}
     <div class="container bg-white shadow mt-5 p-5 form-layout">
-        <h3 class="text-center">{% translate 'Subscription Cancelled' %}</h3>
+        <h3 class="text-center">{% translate 'Subscription Updated' %}</h3>
         <hr>
-        <h1 class="text-center">❌</h1>
+        <h1 class="text-center">✅</h1>
         <p>
             {% blocktranslate %}
-                Your subscription has been cancelled as per your request. Thank you for your past support!
+                Your subscription has been updated as per your request.
             {% endblocktranslate %}
         </p>
         <a href="{% url 'client-dashboard' %}" class="btn btn-success">

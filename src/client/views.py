@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import aget_user
 from django.utils.translation import gettext as _t
+from django.urls import reverse
 
 from client.models import Subscription, PlanChoice
 from .forms import UpdateSubscriptionForm
@@ -127,7 +128,27 @@ async def update_subscription(request: HttpRequest, subscription: Subscription) 
     """
     user_plan_choice = await subscription.aplan_choice()
     if request.method == 'POST':
-        http_response = redirect('client-update-user')
+        # First, update the subscription remotely on PayPal
+        new_plan_code = request.POST['plan_choices']
+        new_plan_choice = await PlanChoice.afrom_plan_code(new_plan_code)
+        new_plan_id = new_plan_choice.external_plan_id
+
+        access_token = await sub_manager.get_access_token()
+        approval_url = await sub_manager.update_subscription_plan(
+            access_token,
+            subscription_id = subscription.external_subscription_id,
+            new_plan_id = new_plan_id,
+            return_url = request.build_absolute_uri(reverse('client-update-subscription-confirmed')),
+            cancel_url = request.build_absolute_uri(reverse('client-update-user'))
+        )
+
+        if approval_url:
+            http_response = redirect(approval_url)
+            request.session['subscription_id'] = subscription.id
+            request.session['new_plan_id'] = new_plan_id
+        else:
+            error_msg = 'ERROR: unable to obtain the approval link from PayPal'
+            http_response = HttpResponse(error_msg)
 
     else:
         form = await UpdateSubscriptionForm.ainit(
@@ -138,3 +159,39 @@ async def update_subscription(request: HttpRequest, subscription: Subscription) 
         http_response = await arender(request, 'client/update-subscription.html', context)
 
     return http_response
+
+@aclient_required
+async def update_subscription_confirmed(request: HttpRequest) -> HttpResponse:
+    session = request.session
+
+    try:
+        subscription_db_id = session['subscription_id']
+        new_plan_id = session['new_plan_id']
+    except KeyError as ex:
+        error_msg = (
+            "ERROR: Can't update locally the subscription because key"
+            f"{ex.args} is missing from the request"
+        )
+        return HttpResponse(error_msg)
+    else:
+        del session['subscription_id']
+        del session['new_plan_id']
+    
+    subscription = await Subscription.objects.aget(id = int(subscription_db_id))
+    subscription_id = subscription.external_subscription_id
+
+    # Verify the subscription status (optional, but recommended)
+    access_token = await sub_manager.get_access_token()
+    sub_details = await sub_manager.get_subscription_details(access_token, subscription_id)
+
+    if not (sub_details['status'] == 'ACTIVE' and sub_details['plan_id'] == new_plan_id):
+        error_msg = f'ERROR: Invalid subscription data during plan update'
+        return HttpResponse(error_msg)
+    
+    # Update locally the subscription
+    new_plan_choice = await PlanChoice.objects.aget(external_plan_id = new_plan_id)
+    subscription.plan_choice = new_plan_choice
+    await subscription.asave()
+
+    return await arender(request, 'client/update-subscription-confirmed.html')
+
