@@ -67,7 +67,7 @@ async def update_article(request: HttpRequest, article: Article) -> HttpResponse
     return await arender(request, 'writer/update-article.html', context)
 
 @awriter_required
-@ensure_for_current_user(Article, redirect_if_missing='writer-my_articles')
+@ensure_for_current_user(Article, redirect_if_missing='writer-my-articles')
 async def delete_article(request: HttpRequest, article: Article) -> HttpResponse:
     """
     This is the writer's delete article
